@@ -1,0 +1,36 @@
+on:
+  workflow_call:
+    inputs:
+      HELM_CHART_LOCATION:
+        required: true
+        type: string
+      REGISTRY:
+        required: true
+        type: string
+      IMAGE_NAME:
+        required: true
+        type: string
+      VERSION:
+        required: true
+        type: string
+      BRANCH_TO_PUSH:
+        required: true
+        type: string
+        default: "refs/heads/main"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Helm Charts
+        run: |
+          helm dependency build ${{ inputs.HELM_CHART_LOCATION }}
+          helm package ${{ inputs.HELM_CHART_LOCATION }} --version ${{ inputs.VERSION }} --app-version ${{ inputs.VERSION }} --destination charts
+      - name: Publish Helm Charts
+        if: ${{ github.ref == inputs.BRANCH_TO_PUSH }}
+        run: |
+          cd tmp/charts
+          helm push *-${{ inputs.VERSION }}.tgz oci://${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}/charts

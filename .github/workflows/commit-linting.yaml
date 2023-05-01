@@ -1,7 +1,8 @@
 name: Commit-Linting
 
-on: [ pull_request ]
-
+on:
+  workflow_call:
+  pull_request:
 
 permissions:
   contents: read # for checkout

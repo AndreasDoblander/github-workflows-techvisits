@@ -1,0 +1,45 @@
+on:
+  workflow_call:
+    inputs:
+      REGISTRY:
+        required: true
+        type: string
+      IMAGE_NAME:
+        required: true
+        type: string
+      VERSION:
+        required: true
+        type: string
+      BRANCH_TO_PUSH:
+        required: true
+        type: string
+        default: "refs/heads/main"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in to the Container Registry
+        uses: docker/login-action@v2
+        if: ${{ github.ref == inputs.BRANCH_TO_PUSH }}
+        with:
+          registry: ${{ inputs.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}
+          tags: ${{ inputs.VERSION }}
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: ${{ github.ref == inputs.BRANCH_TO_PUSH }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
