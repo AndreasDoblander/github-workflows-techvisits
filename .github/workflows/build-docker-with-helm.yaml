@@ -4,7 +4,6 @@ on:
   workflow_call:
     inputs:
       REGISTRY:
-        required: true
         type: string
         default: ghcr.io
       IMAGE_NAME:
@@ -14,7 +13,6 @@ on:
         required: true
         type: string
       BRANCH_TO_PUSH:
-        required: true
         type: string
         default: refs/heads/main
     secrets:
