@@ -1,0 +1,60 @@
+on:
+  workflow_call:
+    inputs:
+      COMMIT_LINTING_ENABLED:
+        default: true
+        required: false
+        type: boolean
+      DEBUG:
+        default: false
+        required: false
+        type: boolean
+      DRY_RUN_VERSION:
+        required: true
+        type: string
+      DRY_RUN_VERSION_VERIFICATION:
+        default: true
+        required: false
+        type: boolean
+    outputs:
+      version:
+        description: "Version of the Release DryRun"
+        value: ${{ jobs.publish-release.outputs.version }}
+
+jobs:
+  ### Publish Release
+  publish-release:
+    name: Release
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+    outputs:
+      version: ${{ steps.release-version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dt-uibk-workshop/semantic-release-installer-action@main
+      - name: Release Version
+        id: release-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_LINTING_ENABLED: ${{ inputs.COMMIT_LINTING_ENABLED }}
+          VERSION_DRYRUN: ${{ inputs.DRY_RUN_VERSION }}
+          VERIFY_DRYRUN_VERSION: ${{ inputs.DRY_RUN_VERSION_VERIFICATION }}
+        run: |
+          npx semantic-release --debug=${{ inputs.debug}}
+      - name: Release Summary
+        run: |
+          releasedVersion=${{ env.NEXT_RELEASE_VERSION }}
+          
+          if [[ -z "$releasedVersion" ]] ; then
+            echo "no version released, please create valid commits for semantic-release..."
+            echo "## 🔥Publishing Release failed: no valid commits available 😑👷" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          echo "released version: ${releasedVersion}"
+          echo "version=${releasedVersion}" >> "$GITHUB_OUTPUT"
+          echo "# Release ${releasedVersion} successfully published  🚀" >> $GITHUB_STEP_SUMMARY

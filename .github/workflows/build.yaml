@@ -1,0 +1,47 @@
+name: Test-Dry-Run
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+permissions:
+  contents: read # for checkout
+
+jobs:
+  #### Release Dry Run
+  dryrun:
+    uses: ./.github/workflows/release-dryrun.yaml
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+
+  #### Build
+  build:
+    name: Build
+    needs: [ dryrun ]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        env:
+          VERSION: ${{ needs.dryrun.outputs.version }}
+        run: |
+          echo "building version=$VERSION"
+          echo "nothing todo for this repository..."
+
+  ### Publish Release
+  publish:
+    if: github.ref_name == 'main'
+    needs: [ dryrun, build ]
+    uses: ./.github/workflows/publish-release.yaml
+    with:
+      DRY_RUN_VERSION: ${{ needs.dryrun.outputs.version }}
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write

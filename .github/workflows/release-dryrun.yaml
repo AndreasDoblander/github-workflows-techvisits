@@ -1,0 +1,56 @@
+on:
+  workflow_call:
+    inputs:
+      COMMIT_LINTING_ENABLED:
+        default: true
+        required: false
+        type: boolean
+      DEBUG:
+        default: false
+        required: false
+        type: boolean
+    outputs:
+      version:
+        description: "Version of the Release DryRun"
+        value: ${{ jobs.release-dryrun.outputs.version }}
+
+jobs:
+  #### Release Dry Run
+  release-dryrun:
+    name: Release
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+    outputs:
+      version: ${{ steps.check-release.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dt-uibk-workshop/semantic-release-installer-action@main
+      - name: DryRun Release Version
+        run: |
+          npx semantic-release --dry-run --no-ci --debug=${{ inputs.debug}} --branches ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_LINTING_ENABLED: ${{ inputs.COMMIT_LINTING_ENABLED }}
+      - name: Check DryRun Release
+        id: check-release
+        run: |
+          nextVersion=${{ env.NEXT_RELEASE_VERSION }}
+          
+          if [[ -z "$nextVersion" ]] ; then
+            echo "no new version released, please create valid commits for semantic-release..."
+            echo "## 🔥DryRun failed: no valid commits available 😑👷" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          echo "next version: ${nextVersion}"
+          echo "version=${nextVersion}" >> "$GITHUB_OUTPUT"
+          
+          if [[ -f ".NOTES" ]] ; then
+            echo "updating github step summary with release-notes from dryrun..."
+            echo "# DryRun: Release Changelog  🚀" >> $GITHUB_STEP_SUMMARY
+            cat .NOTES >> $GITHUB_STEP_SUMMARY
+          fi
