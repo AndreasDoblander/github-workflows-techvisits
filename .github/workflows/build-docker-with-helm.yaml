@@ -30,7 +30,7 @@ jobs:
       packages: write
 
   #### Docker-Build
-  docker:
+  build-docker:
     uses: dt-uibk-workshop/github-workflows/.github/workflows/build-docker.yaml@main
     needs: [ dryrun ]
     with:
@@ -43,7 +43,7 @@ jobs:
       packages: write
 
   #### Helm-Build
-  helm:
+  build-helm:
     uses: dt-uibk-workshop/github-workflows/.github/workflows/build-helm.yaml@main
     needs: [ dryrun ]
     with:
@@ -59,7 +59,7 @@ jobs:
   ### Publish Release
   publish:
     if: github.ref_name == 'main'
-    needs: [ dryrun, helm, docker ]
+    needs: [ dryrun, build-helm, build-docker ]
     uses: dt-uibk-workshop/github-workflows/.github/workflows/publish-release.yaml@main
     with:
       DRY_RUN_VERSION: ${{ needs.dryrun.outputs.version }}

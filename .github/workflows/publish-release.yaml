@@ -24,7 +24,7 @@ on:
 jobs:
   ### Publish Release
   publish-release:
-    name: Release
+    name: publish
     runs-on: ubuntu-22.04
     permissions:
       contents: write

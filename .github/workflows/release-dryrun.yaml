@@ -17,7 +17,7 @@ on:
 jobs:
   #### Release Dry Run
   release-dryrun:
-    name: Release
+    name: dryrun
     runs-on: ubuntu-22.04
     permissions:
       contents: write
