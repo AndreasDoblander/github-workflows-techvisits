@@ -29,7 +29,7 @@ jobs:
       - name: Build Helm Charts
         run: |
           helm dependency build ${{ inputs.HELM_CHART_LOCATION }}
-          helm package ${{ inputs.HELM_CHART_LOCATION }} --version ${{ inputs.VERSION }} --app-version ${{ inputs.VERSION }} --destination charts
+          helm package ${{ inputs.HELM_CHART_LOCATION }} --version ${{ inputs.VERSION }} --app-version ${{ inputs.VERSION }} --destination tmp/charts
       - name: Publish Helm Charts
         if: ${{ github.ref == inputs.BRANCH_TO_PUSH }}
         run: |
