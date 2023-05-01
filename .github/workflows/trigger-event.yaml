@@ -4,14 +4,13 @@ on:
       REPOSITORY:
         required: true
         type: string
-        default: "dt-uibk-workshop/gitops-state"
+        default: dt-uibk-workshop/gitops-state
       EVENT_TYPE:
         required: true
         type: string
       CLIENT_PAYLOAD:
         required: true
         type: string
-        #
     secrets:
       TOKEN:
         required: true
@@ -25,4 +24,4 @@ jobs:
           curl -X POST https://api.github.com/repos/${{ inputs.REPOSITORY }}/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ":${{ secrets.TOKEN }}" \
-          --data '{"event_type": "${{ inputs.EVENT_TYPE }}", "client_payload": "${{ inputs.CLIENT_PAYLOAD }}" }'
+          --data '{"event_type": "${{ inputs.EVENT_TYPE }}", "client_payload": ${{ inputs.CLIENT_PAYLOAD }} }'
