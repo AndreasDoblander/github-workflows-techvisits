@@ -1,4 +1,4 @@
-name: Test-Dry-Run
+name: Build GH Workflows
 
 on:
   push:
