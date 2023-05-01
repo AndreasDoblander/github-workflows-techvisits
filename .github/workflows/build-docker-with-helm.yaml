@@ -21,6 +21,7 @@ on:
       TOKEN:
         required: true
 
+jobs:
   #### Release Dry Run
   dryrun:
     uses: dt-uibk-workshop/github-workflows/.github/workflows/release-dryrun.yaml@main
