@@ -1,0 +1,19 @@
+name: Commit-Linting
+
+on: [ pull_request ]
+
+
+permissions:
+  contents: read # for checkout
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: dt-uibk-workshop/semantic-release-installer-action@main
+      - name: Validate PR commits with commitlint
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
