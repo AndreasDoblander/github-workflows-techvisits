@@ -49,13 +49,13 @@ jobs:
           push: ${{ github.ref == inputs.BRANCH_TO_PUSH }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:
-            VERSION: ${{ inputs.VERSION }}
-            BUILD_TIMESTAMP: ${{ github.event.repository.created_at }}
-            COMMIT_HASH: ${{ github.sha }}
-            APP_NAME: ${{ github.event.repository.name }}
-            REPOSITORY: ${{ github.repository }}
-            REPOSITORY_URL: ${{ github.repositoryUrl }}
-            WORKFLOW_LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          build-args: |
+            VERSION=${{ inputs.VERSION }}
+            BUILD_TIMESTAMP=${{ github.event.repository.created_at }}
+            COMMIT_HASH=${{ github.sha }}
+            APP_NAME=${{ github.event.repository.name }}
+            REPOSITORY=${{ github.repository }}
+            REPOSITORY_URL=${{ github.repositoryUrl }}
+            WORKFLOW_LINK=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 
