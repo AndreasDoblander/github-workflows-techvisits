@@ -32,7 +32,7 @@ jobs:
       - name: DryRun Release Version
         run: |
           branch=${{ github.ref_name }}
-          if [[ "${{ github.event_name }" == "pull_request" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             branch=${{ github.head_ref }}
           fi
           
