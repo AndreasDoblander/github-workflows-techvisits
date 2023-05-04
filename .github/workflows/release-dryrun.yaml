@@ -31,7 +31,7 @@ jobs:
       - uses: dt-uibk-workshop/semantic-release-installer-action@main
       - name: DryRun Release Version
         run: |
-          if [[ "${{ github.event_name }" == "pull_request" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "NEXT_RELEASE_VERSION=0.0.0" >> $GITHUB_ENV
           else
             npx semantic-release --dry-run --no-ci --debug=${{ inputs.debug}} --branches ${{ github.ref_name }}
