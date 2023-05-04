@@ -31,12 +31,11 @@ jobs:
       - uses: dt-uibk-workshop/semantic-release-installer-action@main
       - name: DryRun Release Version
         run: |
-          branch=${{ github.ref_name }}
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            branch=${{ github.head_ref }}
+          if [[ "${{ github.event_name }" == "pull_request" ]]; then
+            echo "NEXT_RELEASE_VERSION=0.0.0" >> $GITHUB_ENV
+          else
+            npx semantic-release --dry-run --no-ci --debug=${{ inputs.debug}} --branches ${{ github.ref_name }}
           fi
-          
-          npx semantic-release --dry-run --no-ci --debug=${{ inputs.debug }} --branches $branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMIT_LINTING_ENABLED: ${{ inputs.COMMIT_LINTING_ENABLED }}
