@@ -1,0 +1,49 @@
+name: Build Docker
+
+on:
+  workflow_call:
+    inputs:
+      REGISTRY:
+        type: string
+        default: ghcr.io
+      IMAGE_NAME:
+        required: true
+        type: string
+      BRANCH_TO_PUSH:
+        type: string
+        default: refs/heads/main
+jobs:
+  #### Release Dry Run
+  dryrun:
+    uses: dt-uibk-workshop/github-workflows/.github/workflows/release-dryrun.yaml@main
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+
+  #### Docker-Build
+  build-docker:
+    uses: dt-uibk-workshop/github-workflows/.github/workflows/build-docker.yaml@main
+    needs: [ dryrun ]
+    with:
+      REGISTRY: ${{ inputs.REGISTRY }}
+      IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
+      VERSION: ${{ needs.dryrun.outputs.version }}
+      BRANCH_TO_PUSH: ${{ inputs.BRANCH_TO_PUSH }}
+    permissions:
+      contents: read
+      packages: write
+
+  ### Publish Release
+  publish:
+    if: github.ref_name == 'main'
+    needs: [ dryrun, build-docker ]
+    uses: dt-uibk-workshop/github-workflows/.github/workflows/publish-release.yaml@main
+    with:
+      DRY_RUN_VERSION: ${{ needs.dryrun.outputs.version }}
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
