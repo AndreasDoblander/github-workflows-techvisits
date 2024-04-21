@@ -38,7 +38,7 @@ jobs:
           images: ${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}
           tags: ${{ inputs.VERSION }}
 
-      - uses: docker/setup-buildx-action@v2
+      - uses: docker/setup-buildx-action@v3
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v5
