@@ -27,7 +27,7 @@ jobs:
     outputs:
       version: ${{ steps.check-release.outputs.version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dt-uibk-workshop/semantic-release-installer-action@main
       - name: DryRun Release Version
         run: |
