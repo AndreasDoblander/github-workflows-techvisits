@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Log in to the Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: ${{ github.ref == inputs.BRANCH_TO_PUSH }}
         with:
           registry: ${{ inputs.REGISTRY }}
