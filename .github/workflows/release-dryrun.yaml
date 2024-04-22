@@ -35,6 +35,10 @@ jobs:
       - uses: dt-uibk-workshop/semantic-release-installer-action@main
       - name: DryRun Release Version
         run: |
+          echo "## DryRun: Release Changelog  🚀" >> $GITHUB_STEP_SUMMARY
+          echo "check logs for details..." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "NEXT_RELEASE_VERSION=0.0.0" >> $GITHUB_ENV
           else
@@ -52,9 +56,9 @@ jobs:
             echo "no new version detected => skipping publishing release"
           
             if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              echo "## 🔥DryRun: skipping publishing of release, as versioning on PRs is not supported!" >> $GITHUB_STEP_SUMMARY
+              echo "### 🔥DryRun: skipping publishing of release, as versioning on PRs is not supported!" >> $GITHUB_STEP_SUMMARY
             else
-              echo "## 🔥DryRun: skipping publishing of release, as no new version detected!" >> $GITHUB_STEP_SUMMARY
+              echo "### 🔥DryRun: skipping publishing of release, as no new version detected!" >> $GITHUB_STEP_SUMMARY
             fi
           
             echo "version=0.0.0" >> "$GITHUB_OUTPUT"
@@ -67,6 +71,5 @@ jobs:
           
           if [[ -f ".NOTES" ]] ; then
             echo "updating github step summary with release-notes from dryrun..."
-            echo "## DryRun: Release Changelog  🚀" >> $GITHUB_STEP_SUMMARY
             cat .NOTES >> $GITHUB_STEP_SUMMARY
           fi
