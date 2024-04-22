@@ -30,6 +30,7 @@ jobs:
       REGISTRY: ${{ inputs.REGISTRY }}
       IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
       VERSION: ${{ needs.dryrun.outputs.version }}
+      SKIP_RELEASE: ${{ needs.dryrun.outputs.skipRelease }}
       BRANCH_TO_PUSH: ${{ inputs.BRANCH_TO_PUSH }}
     permissions:
       contents: read
@@ -37,7 +38,7 @@ jobs:
 
   ### Publish Release
   publish:
-    if: github.ref_name == 'main'
+    if: ${{ !needs.dryrun.outputs.skipRelease && github.ref == inputs.BRANCH_TO_PUSH }}
     needs: [ dryrun, build-docker ]
     uses: dt-uibk-workshop/github-workflows/.github/workflows/publish-release.yaml@main
     with:

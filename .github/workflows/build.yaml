@@ -13,6 +13,8 @@ jobs:
   #### Release Dry Run
   dryrun:
     uses: ./.github/workflows/release-dryrun.yaml
+    with:
+      DEBUG: true
     permissions:
       contents: write
       issues: write
@@ -29,13 +31,15 @@ jobs:
       - name: Build
         env:
           VERSION: ${{ needs.dryrun.outputs.version }}
+          SKIP_RELEASE: ${{ needs.dryrun.outputs.skipRelease }}
         run: |
           echo "building version=$VERSION"
+          echo "skipping releasing/publishing skipRelease=$SKIP_RELEASE"
           echo "nothing todo for this repository..."
 
   ### Publish Release
   publish:
-    if: github.ref_name == 'main'
+    if: ${{ !needs.dryrun.outputs.skipRelease && github.ref == 'main' }}
     needs: [ dryrun, build ]
     uses: ./.github/workflows/publish-release.yaml
     with:

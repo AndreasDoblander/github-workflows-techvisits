@@ -13,6 +13,9 @@ on:
       version:
         description: "Version of the Release DryRun"
         value: ${{ jobs.release-dryrun.outputs.version }}
+      skipRelease:
+        description: "Should the publishing/releasing of Artefacts be disabled"
+        value: ${{ jobs.release-dryrun.outputs.skipRelease }}
 
 jobs:
   #### Release Dry Run
@@ -26,6 +29,7 @@ jobs:
       packages: write
     outputs:
       version: ${{ steps.check-release.outputs.version }}
+      skipRelease: ${{ steps.check-release.outputs.skipRelease }}
     steps:
       - uses: actions/checkout@v4
       - uses: dt-uibk-workshop/semantic-release-installer-action@main
@@ -34,7 +38,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "NEXT_RELEASE_VERSION=0.0.0" >> $GITHUB_ENV
           else
-            npx semantic-release --dry-run --no-ci --debug=${{ inputs.debug}} --branches ${{ github.ref_name }}
+            npx semantic-release --dry-run --no-ci --debug=${{ inputs.debug }} --branches ${{ github.ref_name }}
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,13 +49,21 @@ jobs:
           nextVersion=${{ env.NEXT_RELEASE_VERSION }}
           
           if [[ -z "$nextVersion" ]] ; then
-            echo "no new version released, please create valid commits for semantic-release..."
-            echo "## 🔥DryRun failed: no valid commits available 😑👷" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
+            echo "no new version detected => skipping publishing release"
           
-          echo "next version: ${nextVersion}"
-          echo "version=${nextVersion}" >> "$GITHUB_OUTPUT"
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              echo "# 🔥DryRun: skipping publishing of release, as versioning on PRs is not supported!" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "# 🔥DryRun: skipping publishing of release, as no new version detected!" >> $GITHUB_STEP_SUMMARY
+            fi
+          
+            echo "version=0.0.0" >> "$GITHUB_OUTPUT"
+            echo "skipRelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "next/new version detected => ${nextVersion}"
+            echo "version=${nextVersion}" >> "$GITHUB_OUTPUT"
+            echo "skipRelease=false" >> "$GITHUB_OUTPUT"
+          fi
           
           if [[ -f ".NOTES" ]] ; then
             echo "updating github step summary with release-notes from dryrun..."
