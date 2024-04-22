@@ -44,7 +44,7 @@ jobs:
           VERSION_DRYRUN: ${{ inputs.DRY_RUN_VERSION }}
           VERIFY_DRYRUN_VERSION: ${{ inputs.DRY_RUN_VERSION_VERIFICATION }}
         run: |
-          npx semantic-release --debug=${{ inputs.debug}}
+          npx semantic-release --debug=${{ inputs.debug }}
       - name: Release Summary
         run: |
           releasedVersion=${{ env.NEXT_RELEASE_VERSION }}
