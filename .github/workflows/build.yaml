@@ -39,7 +39,7 @@ jobs:
 
   ### Publish Release
   publish:
-    if: github.ref == 'main'
+    if: github.ref_name == 'main' && needs.dryrun.outputs.skipRelease == 'false'
     needs: [ dryrun, build ]
     uses: ./.github/workflows/publish-release.yaml
     with:
