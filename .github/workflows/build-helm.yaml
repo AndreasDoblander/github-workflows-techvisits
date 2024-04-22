@@ -15,8 +15,8 @@ on:
         type: string
       SKIP_RELEASE:
         required: true
-        type: boolean
-        description: "Set to true will disable publishing/releasing of artefact!"
+        type: string
+        description: "Set to 'true' will disable publishing/releasing of artefact!"
       BRANCH_TO_PUSH:
         required: true
         type: string
