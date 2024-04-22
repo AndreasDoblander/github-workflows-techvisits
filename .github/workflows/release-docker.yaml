@@ -38,7 +38,7 @@ jobs:
 
   ### Publish Release
   publish:
-    if: ${{ !needs.dryrun.outputs.skipRelease && github.ref == inputs.BRANCH_TO_PUSH }}
+    if: ${{ github.ref == inputs.BRANCH_TO_PUSH && needs.dryrun.outputs.skipRelease == 'false' }}
     needs: [ dryrun, build-docker ]
     uses: dt-uibk-workshop/github-workflows/.github/workflows/publish-release.yaml@main
     with:
