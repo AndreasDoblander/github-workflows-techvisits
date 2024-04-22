@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Log in to the Container Registry
         uses: docker/login-action@v3
-        if: ${{ !inputs.SKIP_RELEASE && github.ref == inputs.BRANCH_TO_PUSH }}
+        if: ${{ github.ref == inputs.BRANCH_TO_PUSH && needs.dryrun.outputs.skipRelease == 'false' }}
         with:
           registry: ${{ inputs.REGISTRY }}
           username: ${{ github.actor }}
@@ -50,7 +50,7 @@ jobs:
           context: .
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          push: ${{ !inputs.SKIP_RELEASE && github.ref == inputs.BRANCH_TO_PUSH }}
+          push: ${{ github.ref == inputs.BRANCH_TO_PUSH && needs.dryrun.outputs.skipRelease == 'false' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
