@@ -8,6 +8,8 @@ module.exports = {
             // https://github.com/semantic-release/github
             releasedLabels: false,
             successComment: false,
+            failComment: false,
+            failTitle: false,
         }],
         // https://github.com/semantic-release/exec
         ["@semantic-release/exec", {
