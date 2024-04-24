@@ -2,7 +2,7 @@ on:
   workflow_call:
     inputs:
       COMMIT_LINTING_ENABLED:
-        default: true
+        default: false
         required: false
         type: boolean
       DEBUG:
