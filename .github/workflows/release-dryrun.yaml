@@ -32,7 +32,7 @@ jobs:
       skipRelease: ${{ steps.check-release.outputs.skipRelease }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dt-uibk-workshop/semantic-release-installer-action@main
+      - uses: markuslackner/semantic-release-installer-action@main
       - name: DryRun Release Version
         run: |
           echo "## DryRun: Release Changelog  🚀" >> $GITHUB_STEP_SUMMARY

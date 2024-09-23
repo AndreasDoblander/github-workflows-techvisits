@@ -15,7 +15,7 @@ on:
 jobs:
   #### Release Dry Run
   dryrun:
-    uses: dt-uibk-workshop/github-workflows/.github/workflows/release-dryrun.yaml@main
+    uses: markuslackner/github-workflows/.github/workflows/release-dryrun.yaml@main
     permissions:
       contents: write
       issues: write
@@ -24,7 +24,7 @@ jobs:
 
   #### Docker-Build
   build-docker:
-    uses: dt-uibk-workshop/github-workflows/.github/workflows/build-docker.yaml@main
+    uses: markuslackner/github-workflows/.github/workflows/build-docker.yaml@main
     needs: [ dryrun ]
     with:
       REGISTRY: ${{ inputs.REGISTRY }}
@@ -40,7 +40,7 @@ jobs:
   publish:
     if: ${{ github.ref == inputs.BRANCH_TO_PUSH && needs.dryrun.outputs.skipRelease == 'false' }}
     needs: [ dryrun, build-docker ]
-    uses: dt-uibk-workshop/github-workflows/.github/workflows/publish-release.yaml@main
+    uses: markuslackner/github-workflows/.github/workflows/publish-release.yaml@main
     with:
       DRY_RUN_VERSION: ${{ needs.dryrun.outputs.version }}
     permissions:

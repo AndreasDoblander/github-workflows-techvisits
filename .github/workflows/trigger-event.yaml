@@ -4,7 +4,7 @@ on:
       REPOSITORY:
         required: true
         type: string
-        default: dt-uibk-workshop/gitops-state
+        default: markuslackner/gitops-state
       EVENT_TYPE:
         required: true
         type: string

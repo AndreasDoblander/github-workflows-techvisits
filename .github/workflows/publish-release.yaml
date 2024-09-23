@@ -35,7 +35,7 @@ jobs:
       version: ${{ steps.release-version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dt-uibk-workshop/semantic-release-installer-action@main
+      - uses: markuslackner/semantic-release-installer-action@main
       - name: Release Version
         id: release-version
         env:
