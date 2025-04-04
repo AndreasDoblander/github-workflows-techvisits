@@ -45,6 +45,7 @@ jobs:
         if: ${{ github.ref == inputs.BRANCH_TO_PUSH && inputs.SKIP_RELEASE == 'false' }}
         run: |
           cd tmp/charts
-          helm push ${{ inputs.IMAGE_NAME }}-${{ inputs.VERSION }}.tgz oci://${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}/charts
+          ls *-${{ inputs.VERSION }}.tgz
+          helm push minimal-go-app-${{ inputs.VERSION }}.tgz oci://${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}/charts
           # original
           # helm push *-${{ inputs.VERSION }}.tgz oci://${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}/charts
